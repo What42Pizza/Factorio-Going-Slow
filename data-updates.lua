@@ -2,6 +2,8 @@ require("utils")
 
 
 
+-- removals
+
 removeTechnology("laser")
 removeTechnology("laser-turret")
 removeTechnology("personal-laser-defense-equipment")
@@ -30,7 +32,13 @@ removeTechnology("logistics-3")
 
 removeRecipeFromTechnologies("refined-concrete")
 removeRecipeFromTechnologies("refined-hazard-concrete")
+removeRecipeFromTechnologies("flamethrower-turret")
 
+
+
+-- increase science difficulty
+
+addScienceToTechnology("gun-turret", "logistic-science-pack", 1)
 addScienceToTechnology("artillery", "space-science-pack", 1)
 
 addScienceToTechnology("speed-module", "chemical-science-pack", 1)
@@ -49,13 +57,25 @@ setTechnologyCost("effectivity-module-2", 250)
 
 removeTechnologyPrerequisite("fast-inserter", "electronics")
 addTechnologyPrerequisite("fast-inserter", "inserter")
+addScienceToTechnology("fast-inserter", "logistic-science-pack", 1)
+addScienceToTechnology("fast-inserter", "chemical-science-pack", 1)
+addScienceToTechnology("stack-inserter", "chemical-science-pack", 1)
+addScienceToTechnology("inserter-capacity-bonus-1", "chemical-science-pack", 1)
+addScienceToTechnology("inserter-capacity-bonus-2", "chemical-science-pack", 1)
+addScienceToTechnology("inserter-capacity-bonus-3", "production-science-pack", 1)
 
 
 
 
+
+-- disable recipes by default
 
 setRecipeEnabled("inserter", false)
 setRecipeEnabled("electric-mining-drill", false)
+
+
+
+-- increase costs
 
 addItemToRecipe("landfill", "stone", 100)
 
@@ -74,3 +94,23 @@ addItemToRecipe("productivity-module-2", "productivity-module", 8)
 addItemToRecipe("effectivity-module-2", "advanced-circuit", 10)
 addItemToRecipe("effectivity-module-2", "processing-unit", 10)
 addItemToRecipe("effectivity-module-2", "effectivity-module", 8)
+
+
+
+-- make biters harder
+
+--for _,unit in pairs(data.raw.unit) do
+--	unit.max_health = unit.max_health * 3
+--	local attackParams = unit.attack_parameters
+--	attackParams.damage_modifier = (attackParams.damage_modifier or 1) * 2
+--end
+
+
+
+-- misc tweaks
+
+data.raw["assembling-machine"]["assembling-machine-2"].crafting_speed = 1.0
+
+-- idk how to do this
+--local electricMiner = data.raw["mining-drill"]["electric-mining-drill"]
+--electricMiner.emissions_per_second = electricMiner.emissions_per_second * 0.75

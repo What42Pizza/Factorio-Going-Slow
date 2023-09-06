@@ -1,22 +1,26 @@
 Current:
-add science for electric inserters
-remove flamethrower turrets
-increase mk2 assem. craft speed to 1
-decrease elec miner pollution?
-increase biter health (x3?) & biter damage (x5?)
-add burner miners mk2?
+an overhaul that stick close to vanilla probably won't work, think of new idea
+reduce effectiveness for armor and bullets
+add science for long-inserter
+add language files
 overhaul science packs
 remove some 'increase' researches
 add logging settings
 add later science for landfil or cliff explosives?
-decrease pollution for miners?
+add burner miners mk2?
 look into also remove items, not just researches
 rename automation science to basic science?
 overhaul nuc. reactors?
+decrease elec miner pollution?
 
 
 
 Finished:
+add more sciences to turret research
+increase biter health (x3?) & biter damage (x5?) - REVERTED
+increase mk2 assem. craft speed to 1
+remove flamethrower turrets
+add science for electric inserters
 add more sciences to mod. tech
 increase mod costs
 increase landfil cost
