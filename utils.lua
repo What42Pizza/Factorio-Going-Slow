@@ -24,6 +24,15 @@ function format(...)
 	return table.concat(inputs, " ")
 end
 
+function switch(input, cases)
+	local usedCase = cases[input]
+	if type(usedCase) == "function" then
+		return usedCase()
+	else
+		return usedCase
+	end
+end
+
 
 
 function warn(...)
@@ -50,11 +59,27 @@ function removeItemsFromTable(tableIn, testFn)
 	for i=#keysToRemove,1,-1 do
 		local k = keysToRemove[i]
 		if type(k) == "number" then
-			table.remove(tableIn, i)
+			table.remove(tableIn, k)
 		else
 			tableIn[k] = nil
 		end
 	end
+end
+
+function tableContainsItem(tableIn, item)
+	for _,v in pairs(tableIn) do
+		if v == item then return true end
+	end
+	return false
+end
+
+
+
+function incrementOrder(order)
+	if not order then return "a" end
+	local lastCharNum = string.byte(order, #order, #order)
+	local newCharNum = string.char(lastCharNum + 1)
+	return string.sub(order, 1, -2) .. newCharNum
 end
 
 
@@ -74,24 +99,36 @@ function removeTechnology(techName)
 	end
 end
 
-function removeTechnologyPrerequisite(techName, prereqName)
+function updateTechnologyPrerequisites(techName, updates)
 	local tech = data.raw.technology[techName]
 	if not tech then
 		warn("technology \"" .. techName .. "\" does not exist")
 		return
 	end
-	removeItemsFromTable(tech.prerequisites, function(prereq)
-		return prereq == prereqName
-	end)
-end
-
-function addTechnologyPrerequisite(techName, prereqName)
-	local tech = data.raw.technology[techName]
-	if not tech then
-		warn("technology \"" .. techName .. "\" does not exist")
-		return
+	tech.prerequisites = tech.prerequisites or {}
+	local prereqs = tech.prerequisites
+	local i = 1
+	while i <= #updates do
+		local type = updates[i]
+		switch(type, {
+			["add"] = function()
+				local prereqName = updates[i+1]
+				i = i + 2
+				if tableContainsItem(prereqs, prereqName) then
+					warn("attempted to add prerequisite \"" .. prereqName .. "\" to technology \"" .. techName .. "\", but it is already present")
+					return
+				end
+				addItem(prereqs, prereqName)
+			end,
+			["remove"] = function()
+				local prereqName = updates[i+1]
+				i = i + 2
+				removeItemsFromTable(prereqs, function(prereqName)
+					return prereqName == prereqName
+				end)
+			end,
+		})
 	end
-	addItem(tech.prerequisites, prereqName)
 end
 
 function removeRecipeFromTechnologies(recipeName)
@@ -102,6 +139,18 @@ function removeRecipeFromTechnologies(recipeName)
 		end)
 		::continue::
 	end
+end
+
+function addRecipeToTechnology(techName, recipeName)
+	local tech = data.raw.technology[techName]
+	if not tech then
+		warn("technology \"" .. techName .. "\" does not exist")
+		return
+	end
+	addItem(tech.effects, {
+		type = "unlock-recipe",
+		recipe = recipeName
+	})
 end
 
 function addScienceToTechnology(techName, scienceName, scienceAmount)
@@ -123,7 +172,7 @@ end
 function setTechnologyCost(techName, cost)
 	local tech = data.raw.technology[techName]
 	if not tech then
-		warn("technology \"" .. techName .. " does not exist.")
+		warn("technology \"" .. techName .. "\" does not exist.")
 		return
 	end
 	if type(cost) == "string" then
@@ -133,58 +182,83 @@ function setTechnologyCost(techName, cost)
 	end
 end
 
-function multiplyTechnologyCost(techName, amount)
+function multiplyTechnologyCost(techName, amount, multiplyInfinite)
 	local tech = data.raw.technology[techName]
 	if not tech then
-		warn("technology \"" .. techName .. " does not exist.")
+		warn("technology \"" .. techName .. "\" does not exist.")
 		return
 	end
 	local unit = tech.unit
 	if type(unit.count) ~= "nil" then
 		unit.count = unit.count * amount
 	end
-	if type(unit.count_formula) ~= "nil" then
+	if type(unit.count_formula) ~= "nil" and multiplyInfinite then
 		unit.count_formula = unit.count_formula .. '*' .. tostring(amount)
 	end
 end
 
 
 
-function setRecipeEnabled(recipeName, newValue)
+function disableRecipeAtStart(recipeName)
 	local recipe = data.raw.recipe[recipeName]
 	if not recipe then
-		warn("recipe \"" .. recipeName .. " does not exist.")
+		warn("recipe \"" .. recipeName .. "\" does not exist.")
 		return
 	end
-	recipe.enabled = newValue
-	recipe.hidden = not newValue
-	recipe.hide_from_stats = not newValue
-	recipe.hide_from_player_crafting = not newValue
+	recipe.enabled = false
 	if recipe.normal then
-		recipe.normal.enabled = newValue
-		recipe.normal.hidden = not newValue
-		recipe.normal.hide_from_stats = not newValue
-		recipe.normal.hide_from_player_crafting = not newValue
+		recipe.normal.enabled = false
 	end
 	if recipe.expensive then
-		recipe.expensive.enabled = newValue
-		recipe.expensive.hidden = not newValue
-		recipe.expensive.hide_from_stats = not newValue
-		recipe.expensive.hide_from_player_crafting = not newValue
+		recipe.expensive.enabled = false
 	end
 end
 
 function addItemToRecipe(recipeName, itemName, itemAmount)
+	function addItemToIngredients(ingredients)
+		for _,item in ipairs(ingredients) do
+			if item[1] == itemName then
+				item[2] = math.max(item[2], itemAmount)
+				return
+			end
+		end
+		addItem(ingredients, {itemName, itemAmount})
+	end
 	local recipe = data.raw.recipe[recipeName]
 	if not recipe then
-		warn("recipe \"" .. recipeName .. " does not exist.")
+		warn("recipe \"" .. recipeName .. "\" does not exist.")
 		return
 	end
-	for _,item in ipairs(recipe.ingredients) do
-		if item[1] == itemName then
-			item[2] = math.max(item[2], itemAmount)
-			return
-		end
+	if recipe.ingredients then
+		addItemToIngredients(recipe.ingredients)
 	end
-	addItem(recipe.ingredients, {itemName, itemAmount})
+	if recipe.normal then
+		addItemToIngredients(recipe.normal.ingredients)
+	end
+	if recipe.expensive then
+		addItemToIngredients(recipe.expensive.ingredients)
+	end
+end
+
+function removeItemFromRecipe(recipeName, itemName)
+	local recipe = data.raw.recipe[recipeName]
+	if not recipe then
+		warn("recipe \"" .. recipeName .. "\" does not exist.")
+		return
+	end
+	if recipe.ingredients then
+		removeItemsFromTable(recipe.ingredients, function(item)
+			return item[1] == itemName
+		end)
+	end
+	if recipe.normal then
+		removeItemsFromTable(recipe.normal.ingredients, function(item)
+			return item[1] == itemName
+		end)
+	end
+	if recipe.expensive then
+		removeItemsFromTable(recipe.expensive.ingredients, function(item)
+			return item[1] == itemName
+		end)
+	end
 end
