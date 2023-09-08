@@ -1,3 +1,5 @@
+-- logging
+
 function betterToString(value, tabLevel)
 	if type(tabLevel) == "nil" then tabLevel = 1 end
 	if type(value) ~= "table" then
@@ -24,17 +26,6 @@ function format(...)
 	return table.concat(inputs, " ")
 end
 
-function switch(input, cases)
-	local usedCase = cases[input]
-	if type(usedCase) == "function" then
-		return usedCase()
-	else
-		return usedCase
-	end
-end
-
-
-
 function warn(...)
 	local message = format("WARNING: ", ...)
 	local padding = string.rep("=", string.len(message))
@@ -44,6 +35,20 @@ function warn(...)
 end
 
 
+
+-- basic stuff
+
+function switch(input, cases, default)
+	local usedCase = cases[input]
+	if type(usedCase) == "nil" and default then
+		usedCase = default
+	end
+	if type(usedCase) == "function" then
+		return usedCase()
+	else
+		return usedCase
+	end
+end
 
 function addItem(tableIn, item)
 	tableIn[#tableIn+1] = item
@@ -75,6 +80,8 @@ end
 
 
 
+-- misc
+
 function incrementOrder(order)
 	if not order then return "a" end
 	local lastCharNum = string.byte(order, #order, #order)
@@ -83,6 +90,8 @@ function incrementOrder(order)
 end
 
 
+
+-- technologies
 
 function removeTechnology(techName)
 	if not data.raw.technology[techName] then
@@ -110,10 +119,11 @@ function updateTechnologyPrerequisites(techName, updates)
 	local i = 1
 	while i <= #updates do
 		local type = updates[i]
+		local argCount = 0
 		switch(type, {
 			["add"] = function()
+				argCount = 1
 				local prereqName = updates[i+1]
-				i = i + 2
 				if tableContainsItem(prereqs, prereqName) then
 					warn("attempted to add prerequisite \"" .. prereqName .. "\" to technology \"" .. techName .. "\", but it is already present")
 					return
@@ -121,13 +131,14 @@ function updateTechnologyPrerequisites(techName, updates)
 				addItem(prereqs, prereqName)
 			end,
 			["remove"] = function()
+				argCount = 1
 				local prereqName = updates[i+1]
-				i = i + 2
-				removeItemsFromTable(prereqs, function(prereqName)
-					return prereqName == prereqName
+				removeItemsFromTable(prereqs, function(prereq)
+					return prereq == prereqName
 				end)
 			end,
 		})
+		i = i + 1 + argCount
 	end
 end
 
@@ -169,6 +180,18 @@ function addScienceToTechnology(techName, scienceName, scienceAmount)
 	addItem(unit.ingredients, {scienceName, scienceAmount})
 end
 
+function removeScienceFromTechnology(techName, scienceName)
+	local tech = data.raw.technology[techName]
+	if not tech then
+		warn("technology \"" .. techName .. "\" does not exist.")
+		return
+	end
+	local unit = tech.unit
+	removeItemsFromTable(unit.ingredients, function(ingredient)
+		return ingredient[1] == scienceName
+	end)
+end
+
 function setTechnologyCost(techName, cost)
 	local tech = data.raw.technology[techName]
 	if not tech then
@@ -199,66 +222,118 @@ end
 
 
 
-function disableRecipeAtStart(recipeName)
-	local recipe = data.raw.recipe[recipeName]
-	if not recipe then
-		warn("recipe \"" .. recipeName .. "\" does not exist.")
-		return
-	end
-	recipe.enabled = false
-	if recipe.normal then
-		recipe.normal.enabled = false
-	end
-	if recipe.expensive then
-		recipe.expensive.enabled = false
-	end
-end
+-- recipes
 
-function addItemToRecipe(recipeName, itemName, itemAmount)
+function addItemToRecipeTable(recipe, itemName, count)
 	function addItemToIngredients(ingredients)
 		for _,item in ipairs(ingredients) do
 			if item[1] == itemName then
-				item[2] = math.max(item[2], itemAmount)
+				item[2] = math.max(item[2], count)
+				return
+			end
+			if item.name == itemName then
+				item.amount = math.max(item.amount, count)
 				return
 			end
 		end
-		addItem(ingredients, {itemName, itemAmount})
+		addItem(ingredients, {type = "item", name = itemName, amount = count})
 	end
-	local recipe = data.raw.recipe[recipeName]
-	if not recipe then
-		warn("recipe \"" .. recipeName .. "\" does not exist.")
-		return
-	end
-	if recipe.ingredients then
-		addItemToIngredients(recipe.ingredients)
-	end
-	if recipe.normal then
-		addItemToIngredients(recipe.normal.ingredients)
-	end
-	if recipe.expensive then
-		addItemToIngredients(recipe.expensive.ingredients)
-	end
+	if recipe.ingredients then addItemToIngredients(recipe.ingredients) end
+	if recipe.normal then addItemToIngredients(recipe.normal.ingredients) end
+	if recipe.expensive then addItemToIngredients(recipe.expensive.ingredients) end
 end
 
-function removeItemFromRecipe(recipeName, itemName)
+function removeItemFromRecipeTable(recipe, itemName, count)
+	function testFn(item)
+		return item.name == itemName or item[1] == itemName
+	end
+	if recipe.ingredients then removeItemsFromTable(recipe.ingredients, testFn) end
+	if recipe.normal then removeItemsFromTable(recipe.normal.ingredients, testFn) end
+	if recipe.expensive then removeItemsFromTable(recipe.expensive.ingredients, testFn) end
+end
+
+function setItemInRecipeTable(recipe, itemName, count)
+	function setItemInIngredients(ingredients)
+		for _,item in ipairs(ingredients) do
+			if item[1] == itemName then
+				item[2] = count
+				return
+			end
+			if item.name == itemName then
+				item.amount = count
+				return
+			end
+		end
+		addItem(ingredients, {type = "item", name = itemName, amount = count})
+	end
+	if recipe.ingredients then setItemInIngredients(recipe.ingredients) end
+	if recipe.normal then setItemInIngredients(recipe.normal.ingredients) end
+	if recipe.expensive then setItemInIngredients(recipe.expensive.ingredients) end
+end
+
+function updateRecipe(recipeName, updates)
 	local recipe = data.raw.recipe[recipeName]
 	if not recipe then
-		warn("recipe \"" .. recipeName .. "\" does not exist.")
+		warn("recipe \"" .. recipeName .. "\" does not exist")
 		return
 	end
-	if recipe.ingredients then
-		removeItemsFromTable(recipe.ingredients, function(item)
-			return item[1] == itemName
+	local i = 1
+	while i <= #updates do
+		local type = updates[i]
+		local argCount = 0
+		switch(type, {
+			
+			-- sets the result count
+			["set count"] = function()
+				argCount = 1
+				local count = updates[i+1]
+				if recipe.result_count then recipe.result_count = count end
+				if recipe.normal then recipe.normal.result_count = count end
+				if recipe.expensive then recipe.expensive.result_count = count end
+			end,
+			
+			["craft time"] = function()
+				argCount = 1
+				local craftTime = updates[i+1]
+				if recipe.energy_required then recipe.energy_required = craftTime end
+				if recipe.normal then recipe.normal.energy_required = craftTime end
+				if recipe.expensive then recipe.expensive.energy_required = craftTime end
+			end,
+			
+			-- like 'set item', but if it's already present, the recipe count is set to at least this count (doesn't lower count if item is already present, unlike 'set item')
+			["add item"] = function()
+				argCount = 2
+				local itemName = updates[i+1]
+				local count = updates[i+2]
+				addItemToRecipeTable(recipe, itemName, count)
+			end,
+			
+			-- removes an item from ingredients (or does nothing if already removed)
+			["remove item"] = function()
+				argCount = 1
+				local itemName = updates[i+1]
+				removeItemFromRecipeTable(recipe, itemName)
+			end,
+			
+			-- sets the count of an item or adds it if not already present
+			["set item"] = function()
+				argCount = 2
+				local itemName = updates[i+1]
+				local count = updates[i+2]
+				setItemInRecipeTable(recipe, itemName, count)
+			end,
+			
+			-- disables the recipe so that it needs to be unlocked with research
+			["disable at start"] = function()
+				argCount = 0
+				recipe.enabled = false
+				if recipe.normal then recipe.normal.enabled = false end
+				if recipe.expensive then recipe.expensive.enabled = false end
+			end,
+			
+		}, function()
+			warn("unknown command for updateRecipe(): \"" .. tostring(type) .. "\"")
 		end)
-	end
-	if recipe.normal then
-		removeItemsFromTable(recipe.normal.ingredients, function(item)
-			return item[1] == itemName
-		end)
-	end
-	if recipe.expensive then
-		removeItemsFromTable(recipe.expensive.ingredients, function(item)
-			return item[1] == itemName
-		end)
+		i = i + 1 + argCount
 	end
 end
