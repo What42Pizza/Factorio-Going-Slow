@@ -27,7 +27,7 @@ function format(...)
 end
 
 function warn(...)
-	local message = format("WARNING: ", ...)
+	local message = format("WARNING:", ...)
 	local padding = string.rep("=", string.len(message))
 	log(padding)
 	log(message)
@@ -52,6 +52,16 @@ end
 
 function addItem(tableIn, item)
 	tableIn[#tableIn+1] = item
+end
+
+function addItemIfNotPresent(tableIn, item, testFn)
+	testFn = testFn or function(other)
+		return item == other
+	end
+	for _,other in pairs(tableIn) do
+		if testFn(other) then return end
+	end
+	addItem(tableIn, item)
 end
 
 function removeItemsFromTable(tableIn, testFn)
@@ -93,118 +103,6 @@ end
 
 -- technologies
 
-function removeTechnology(techName)
-	if not data.raw.technology[techName] then
-		warn("technology \"" .. techName .. "\" does not exist")
-		return
-	end
-	data.raw.technology[techName].hidden = true
-	for _,tech in pairs(data.raw.technology) do
-		if not tech.prerequisites then goto continue end
-		removeItemsFromTable(tech.prerequisites, function(pre)
-			return pre == techName
-		end)
-		::continue::
-	end
-end
-
-function updateTechnologyPrerequisites(techName, updates)
-	local tech = data.raw.technology[techName]
-	if not tech then
-		warn("technology \"" .. techName .. "\" does not exist")
-		return
-	end
-	tech.prerequisites = tech.prerequisites or {}
-	local prereqs = tech.prerequisites
-	local i = 1
-	while i <= #updates do
-		local type = updates[i]
-		local argCount = 0
-		switch(type, {
-			["add"] = function()
-				argCount = 1
-				local prereqName = updates[i+1]
-				if tableContainsItem(prereqs, prereqName) then
-					warn("attempted to add prerequisite \"" .. prereqName .. "\" to technology \"" .. techName .. "\", but it is already present")
-					return
-				end
-				addItem(prereqs, prereqName)
-			end,
-			["remove"] = function()
-				argCount = 1
-				local prereqName = updates[i+1]
-				removeItemsFromTable(prereqs, function(prereq)
-					return prereq == prereqName
-				end)
-			end,
-		})
-		i = i + 1 + argCount
-	end
-end
-
-function removeRecipeFromTechnologies(recipeName)
-	for _,tech in pairs(data.raw.technology) do
-		if not tech.effects then goto continue end
-		removeItemsFromTable(tech.effects, function(effect)
-			return effect.recipe == recipeName
-		end)
-		::continue::
-	end
-end
-
-function addRecipeToTechnology(techName, recipeName)
-	local tech = data.raw.technology[techName]
-	if not tech then
-		warn("technology \"" .. techName .. "\" does not exist")
-		return
-	end
-	addItem(tech.effects, {
-		type = "unlock-recipe",
-		recipe = recipeName
-	})
-end
-
-function addScienceToTechnology(techName, scienceName, scienceAmount)
-	local tech = data.raw.technology[techName]
-	if not tech then
-		warn("technology \"" .. techName .. "\" does not exist.")
-		return
-	end
-	local unit = tech.unit
-	for _,ingredient in ipairs(unit.ingredients) do
-		if ingredient[1] == scienceName then
-			ingredient[2] = math.max(ingredient[2], scienceAmount)
-			return
-		end
-	end
-	addItem(unit.ingredients, {scienceName, scienceAmount})
-end
-
-function removeScienceFromTechnology(techName, scienceName)
-	local tech = data.raw.technology[techName]
-	if not tech then
-		warn("technology \"" .. techName .. "\" does not exist.")
-		return
-	end
-	local unit = tech.unit
-	removeItemsFromTable(unit.ingredients, function(ingredient)
-		return ingredient[1] == scienceName
-	end)
-end
-
-function setTechnologyCost(techName, cost)
-	local tech = data.raw.technology[techName]
-	if not tech then
-		warn("technology \"" .. techName .. "\" does not exist.")
-		return
-	end
-	if type(cost) == "string" then
-		tech.unit.count_formula = cost
-	else
-		tech.unit.count = cost
-	end
-end
-
 function multiplyTechnologyCost(techName, amount, multiplyInfinite)
 	local tech = data.raw.technology[techName]
 	if not tech then
@@ -217,6 +115,157 @@ function multiplyTechnologyCost(techName, amount, multiplyInfinite)
 	end
 	if type(unit.count_formula) ~= "nil" and multiplyInfinite then
 		unit.count_formula = unit.count_formula .. '*' .. tostring(amount)
+	end
+end
+
+function copyTechTablePrereqs(fromTech, toTech)
+	for _,prereq in ipairs(fromTech.prerequisites) do
+		addItemIfNotPresent(toTech.prerequisites, prereq)
+	end
+end
+
+function removeTechnologyFromPrereqs(techName)
+	local tech = data.raw.technology[techName]
+	if not tech then
+		warn("tech \"" .. techName .. "\" does not exist")
+		return
+	end
+	for _,currTech in pairs(data.raw.technology) do
+		if not tech.prerequisites then goto continue end
+		currTech.prerequisites = currTech.prerequisites or {}
+		local lengthBeforeRemoved = #currTech.prerequisites or {}
+		removeItemsFromTable(currTech.prerequisites, function(pre)
+			return pre == techName
+		end)
+		if tech.prerequisites and #currTech.prerequisites ~= lengthBeforeRemoved then
+			copyTechTablePrereqs(tech, currTech)
+		end
+		::continue::
+	end
+end
+
+function updateTechnology(techName, updates)
+	local tech = data.raw.technology[techName]
+	if not tech then
+		warn("tech \"" .. techName .. "\" does not exist")
+		return
+	end
+	local i = 1
+	while i <= #updates do
+		local updateType = updates[i]
+		local argCount = 0
+		switch(updateType, {
+			
+			["disable"] = function()
+				--log("tech \"" .. techName .. "\": disabling")
+				tech.hidden = true
+				removeTechnologyFromPrereqs(tech.name)
+			end,
+			
+			["add prereq"] = function()
+				argCount = 1
+				local prereqName = updates[i+1]
+				--log("tech \"" .. techName .. "\": adding prereq \"" .. prereqName .. "\"")
+				tech.prerequisites = tech.prerequisites or {}
+				if tableContainsItem(tech.prerequisites, prereqName) then
+					warn("attempted to add prerequisite \"" .. prereqName .. "\" to technology \"" .. techName .. "\", but it is already present")
+					return
+				end
+				addItem(tech.prerequisites, prereqName)
+			end,
+			
+			["remove prereq"] = function()
+				argCount = 1
+				local prereqName = updates[i+1]
+				--log("tech \"" .. techName .. "\": removing prereq \"" .. prereqName .. "\"")
+				if not tech.prerequisites then return end
+				removeItemsFromTable(tech.prerequisites, function(prereq)
+					return prereq == prereqName
+				end)
+			end,
+			
+			["add recipe"] = function()
+				argCount = 1
+				local recipeName = updates[i+1]
+				--log("tech \"" .. techName .. "\": adding recipe \"" .. recipeName .. "\"")
+				for _,effect in ipairs(tech.effects) do
+					if effect.recipe == recipeName then return end
+				end
+				addItem(tech.effects, {
+					type = "unlock-recipe",
+					recipe = recipeName
+				})
+			end,
+			
+			["remove recipe"] = function()
+				argCount = 1
+				local recipeName = updates[i+1]
+				--log("tech \"" .. techName .. "\": removing recipe \"" .. recipeName .. "\"")
+				removeItemsFromTable(tech.effects, function(effect)
+					return effect.recipe == recipeName
+				end)
+			end,
+			
+			["add science"] = function()
+				argCount = 2
+				local scienceName = updates[i+1]
+				local scienceCount = updates[i+2]
+				--log("tech \"" .. techName .. "\": adding science \"" .. scienceName .. "\", count: " .. tostring(scienceCount))
+				function addScienceToList(list)
+					for _,ingredient in ipairs(list) do
+						if ingredient.name == scienceName then
+							ingredient.amount = math.max(ingredient.amount, scienceCount)
+							return
+						end
+						if ingredient[1] == scienceName then
+							ingredient[2] = math.max(ingredient[2], scienceCount)
+							return
+						end
+					end
+					addItem(list, {type = "item", name = scienceName, amount = scienceCount})
+				end
+				if tech.unit then addScienceToList(tech.unit.ingredients) end
+				if tech.normal then addScienceToList(tech.normal.unit.ingredients) end
+				if tech.expensive then addScienceToList(tech.expensive.unit.ingredients) end
+			end,
+			
+			["remove science"] = function()
+				argCount = 1
+				local scienceName = updates[i+1]
+				--log("tech \"" .. techName .. "\": removing science \"" .. scienceName .. "\"")
+				function testFn(ingredient)
+					return ingredient.name == scienceName or ingredient[1] == scienceName
+				end
+				if tech.unit then removeItemsFromTable(tech.unit.ingredients, testFn) end
+				if tech.normal then removeItemsFromTable(tech.normal.unit.ingredients, testFn) end
+				if tech.expensive then removeItemsFromTable(tech.expensive.unit.ingredients, testFn) end
+			end,
+			
+			["set cost"] = function()
+				argCount = 1
+				local cost = updates[i+1]
+				--log("tech \"" .. techName .. "\": setting cost to " .. tostring(cost))
+				function setCost(unit)
+					if type(cost) == "string" then
+						unit.count = nil
+						unit.count_formula = cost
+					else
+						unit.count = cost
+						unit.count_formula = nil
+					end
+				end
+				if tech.unit then setCost(tech.unit) end
+				if tech.normal then setCost(tech.normal.unit) end
+				if tech.expensive then setCost(tech.expensive.unit) end
+			end,
+			
+		}, function()
+			warn("unknown command for updateTechnology(): \"" .. tostring(updateType) .. "\"")
+			log("Technology: \"" .. techName .. "\"")
+			log(format("Updates:", updates))
+			log("index: " .. tostring(i))
+		end)
+		i = i + 1 + argCount
 	end
 end
 
@@ -325,7 +374,6 @@ function updateRecipe(recipeName, updates)
 			
 			-- disables the recipe so that it needs to be unlocked with research
 			["disable at start"] = function()
-				argCount = 0
 				recipe.enabled = false
 				if recipe.normal then recipe.normal.enabled = false end
 				if recipe.expensive then recipe.expensive.enabled = false end
@@ -333,6 +381,9 @@ function updateRecipe(recipeName, updates)
 			
 		}, function()
 			warn("unknown command for updateRecipe(): \"" .. tostring(type) .. "\"")
+			log("Recipe: \"" .. recipeName .. "\"")
+			log(format("Updates:", updates))
+			log("index: " .. tostring(i))
 		end)
 		i = i + 1 + argCount
 	end

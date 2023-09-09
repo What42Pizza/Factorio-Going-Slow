@@ -1,23 +1,37 @@
 Current:
 add bigger wooden power poles
-convert tech functions into single updateTechnology() function
+add pollution to trains?
 increase player craft speed to 1.5? (might not be possible)
-add circuits to electronics research?
-add steam power to everything possible (or maybe just add steam to all recipes)
+add circuits to electronics research? (would require A LOT of work)
+add steam power to everything possible
 reduce effectiveness of armors past heavy
 reduce effectiveness of bullets past yellow
 add language files
 overhaul science packs?
-remove some 'increase' researches
+remove some 'increase' researches?
 add logging settings
 add later science for landfil or cliff explosives?
-look into also remove items, not just researches?
+look into also removing items, not just researches?
 rename automation science to basic science?
 overhaul nuc. reactors?
+	idea:
+		inner loop:
+			(pressurized water - depleted uranium) -> [uranium infuser] -> (pressurized water - activated uranium) -> [reactor] ->
+			(pressurized steam - dirty uranium) -> [waste scrubber] -> (pressurized steam - depleted uranium) -> [turbine] ->
+			(steam - depleted uranium) -> [condenser] -> (water - depleted uranium) -> [pressurizer] -> (pressurized water - depleted uranium) -> loop
+		condenser loop:
+			[pump] -> (water) -> [condenser] -> (steam) -> [any]
+		alternate inner loop:
+			(pressurized water - depleted uranium) -> [uranium infuser] -> (pressurized water - activated uranium) -> [reactor] ->
+			(pressurized steam - dirty uranium) -> [waste scrubber] -> (pressurized steam - depleted uranium) -> [pressurized condenser] ->
+			(water - depleted uranium) -> [pressurizer] -> (pressurized water - depleted uranium) -> loop
+		pressurized condenser loop:
+			[pump] -> (water) -> [pressurized condenser] -> (steam (a lot)) -> [any]
 
 
 
 Finished:
+convert tech functions into single updateTechnology() function
 make building recipes easier to craft
 increase miner mk2 pollution
 look into ordering for techs and more
