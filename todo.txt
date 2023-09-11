@@ -1,11 +1,10 @@
 Current:
+add chemical science to military science prereqs
 add bigger wooden power poles
-add pollution to trains?
+add pollution to trains? (probably a bad idea, biters might attack it)
 increase player craft speed to 1.5? (might not be possible)
 add circuits to electronics research? (would require A LOT of work)
 add steam power to everything possible
-reduce effectiveness of armors past heavy
-reduce effectiveness of bullets past yellow
 add language files
 overhaul science packs?
 remove some 'increase' researches?

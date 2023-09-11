@@ -1,3 +1,9 @@
+- 0.1.3 (23/09/10)
+  - Decreased enemy flat resistance
+  - Other misc tweaks
+
+<br>
+
 - 0.1.2 (23/09/09)
   - More playtesting and tweaking
   - Decreased version 0.1.x to 0.0.x and 0.2.x to 0.1.x

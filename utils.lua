@@ -1,3 +1,16 @@
+-- math aliases
+
+sqrt = math.sqrt
+min = math.min
+max = math.max
+floor = math.floor
+ceil = math.ceil
+function round(input)
+	return floor(input + 0.5)
+end
+
+
+
 -- logging
 
 function betterToString(value, tabLevel)
@@ -214,11 +227,11 @@ function updateTechnology(techName, updates)
 				function addScienceToList(list)
 					for _,ingredient in ipairs(list) do
 						if ingredient.name == scienceName then
-							ingredient.amount = math.max(ingredient.amount, scienceCount)
+							ingredient.amount = max(ingredient.amount, scienceCount)
 							return
 						end
 						if ingredient[1] == scienceName then
-							ingredient[2] = math.max(ingredient[2], scienceCount)
+							ingredient[2] = max(ingredient[2], scienceCount)
 							return
 						end
 					end
@@ -277,11 +290,11 @@ function addItemToRecipeTable(recipe, itemName, count)
 	function addItemToIngredients(ingredients)
 		for _,item in ipairs(ingredients) do
 			if item[1] == itemName then
-				item[2] = math.max(item[2], count)
+				item[2] = max(item[2], count)
 				return
 			end
 			if item.name == itemName then
-				item.amount = math.max(item.amount, count)
+				item.amount = max(item.amount, count)
 				return
 			end
 		end
@@ -328,9 +341,9 @@ function updateRecipe(recipeName, updates)
 	end
 	local i = 1
 	while i <= #updates do
-		local type = updates[i]
+		local updateType = updates[i]
 		local argCount = 0
-		switch(type, {
+		switch(updateType, {
 			
 			-- sets the result count
 			["set count"] = function()
@@ -380,8 +393,84 @@ function updateRecipe(recipeName, updates)
 			end,
 			
 		}, function()
-			warn("unknown command for updateRecipe(): \"" .. tostring(type) .. "\"")
+			warn("unknown command for updateRecipe(): \"" .. tostring(updateType) .. "\"")
 			log("Recipe: \"" .. recipeName .. "\"")
+			log(format("Updates:", updates))
+			log("index: " .. tostring(i))
+		end)
+		i = i + 1 + argCount
+	end
+end
+
+
+
+-- units
+
+function updateUnit(unitName, updates)
+	local unit = data.raw.unit[unitName]
+	if not unit then
+		warn("unit \"" .. unitName .. "\" does not exist")
+		return
+	end
+	local i = 1
+	while i <= #updates do
+		local updateType = updates[i]
+		local argCount = 0
+		switch(updateType, {
+			
+			["set health"] = function()
+				argCount = 1
+				local health = updates[i+1]
+				unit.max_health = health
+			end,
+			
+			["set flat resistance"] = function()
+				argCount = 2
+				local resistanceType = updates[i+1]
+				local resistanceAmount = updates[i+2]
+				unit.resistances = unit.resistances or {}
+				for _,resistance in ipairs(unit.resistances) do
+					if resistance.type == resistanceType then
+						resistance.decrease = resistanceAmount
+						return
+					end
+				end
+				addItem(unit.resistances, {type = resistanceType, decrease = resistanceAmount})
+			end,
+			
+			["set resistance percent"] = function()
+				argCount = 2
+				local resistanceType = updates[i+1]
+				local resistanceAmount = updates[i+2]
+				unit.resistances = unit.resistances or {}
+				for _,resistance in ipairs(unit.resistances) do
+					if resistance.type == resistanceType then
+						resistance.percent = resistanceAmount
+						return
+					end
+				end
+				addItem(unit.resistances, {type = resistanceType, percent = resistanceAmount})
+			end,
+			
+			["set resistance"] = function()
+				argCount = 3
+				local resistanceType = updates[i+1]
+				local flatResistance = updates[i+2]
+				local percentResistance = updates[i+3]
+				unit.resistances = unit.resistances or {}
+				for _,resistance in ipairs(unit.resistances) do
+					if resistance.type == resistanceType then
+						resistance.decrease = flatResistance
+						resistance.percent = percentResistance
+						return
+					end
+				end
+				addItem(unit.resistances, {type = resistanceType, decrease = flatResistance, percent = percentResistance})
+			end,
+			
+		}, function()
+			warn("unknown command for updateUnit(): \"" .. tostring(updateType) .. "\"")
+			log("Unit: \"" .. unitName .. "\"")
 			log(format("Updates:", updates))
 			log("index: " .. tostring(i))
 		end)
