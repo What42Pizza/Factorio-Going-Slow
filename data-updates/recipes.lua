@@ -10,6 +10,18 @@ updateRecipe("transport-belt", {
 	"remove item", "iron-plate",
 	"add item", "copper-plate", 1
 })
+updateRecipe("underground-belt", {
+	"set item", "iron-plate", 3
+})
+updateRecipe("splitter", {
+	"set item", "iron-plate", 3,
+	"set item", "transport-belt", 2
+})
+updateRecipe("stack-inserter", {
+	"remove item", "electronic-circuit",
+	"set item", "iron-gear-wheel", 5,
+	"set item", "advanced-circuit", 1
+})
 updateRecipe("grenade", {
 	"craft time", 2,
 	"set item", "coal", 5,
@@ -38,6 +50,7 @@ updateRecipe("solar-panel", {
 	"set item", "electronic-circuit", 5
 })
 updateRecipe("pumpjack", {"remove item", "electronic-circuit"})
+updateRecipe("pipe-to-ground", {"set item", "pipe", 5})
 updateRecipe("repair-pack", {
 	"set count", 2,
 	"remove item", "electronic-circuit",

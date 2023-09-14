@@ -1,5 +1,12 @@
+<br>
+
+- 0.1.4 (23/09/14)
+  - More misc changes
+
+<br>
+
 - 0.1.3 (23/09/10)
-  - Decreased enemy flat resistance
+  - Overhauled enemy fighting
   - Other misc tweaks
 
 <br>

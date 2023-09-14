@@ -127,7 +127,7 @@ function multiplyTechnologyCost(techName, amount, multiplyInfinite)
 		unit.count = unit.count * amount
 	end
 	if type(unit.count_formula) ~= "nil" and multiplyInfinite then
-		unit.count_formula = unit.count_formula .. '*' .. tostring(amount)
+		unit.count_formula = '(' .. unit.count_formula .. ")*" .. tostring(amount)
 	end
 end
 

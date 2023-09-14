@@ -1,4 +1,6 @@
 Current:
+//replace burner miner mk2 with steam powered version of electric miner?
+add multiple types of mk2 miners (default, productivity, no pollution, more?)
 add chemical science to military science prereqs
 add bigger wooden power poles
 add pollution to trains? (probably a bad idea, biters might attack it)
@@ -12,7 +14,7 @@ add logging settings
 add later science for landfil or cliff explosives?
 look into also removing items, not just researches?
 rename automation science to basic science?
-overhaul nuc. reactors?
+overhaul nuc. reactors? (probably should be its own mod)
 	idea:
 		inner loop:
 			(pressurized water - depleted uranium) -> [uranium infuser] -> (pressurized water - activated uranium) -> [reactor] ->

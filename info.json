@@ -1,6 +1,6 @@
 {
 	"name": "Going_Slow",
-	"version": "0.1.2",
+	"version": "0.1.4",
 	"title": "Going Slow",
 	"author": "What42Pizza",
 	"factorio_version": "1.1",
@@ -8,5 +8,5 @@
 		"base >= 1.1",
 		"? Manually_Fix_Research_Tree"
 	],
-	"description": "This is a small-ish overhaul mod that makes the game more primitive in its technology. It mostly has a steampunk asthetic, with most (but not all) machines being powered by steam.\n\nThis mod follows its own style, and you need to be ready for that."
+	"description": "This is a small-ish overhaul mod that makes the game more primitive in its technology, kinda like Factorio from another timeline. It mostly has a steampunk asthetic, with most (but not all) machines being powered by steam.\n\nThis mod follows its own style, and you need to be ready for that."
 }

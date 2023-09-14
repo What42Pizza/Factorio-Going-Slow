@@ -89,7 +89,7 @@ do
 	local gunTurret = data.raw["ammo-turret"]["gun-turret"]
 	local attackParams = gunTurret.attack_parameters
 	attackParams.damage_modifier = (attackParams.damage_modifier or 1) * 0.2
-	attackParams.ammo_consumption_modifier = (attackParams.ammo_consumption_modifier or 1) * 0.1
+	attackParams.ammo_consumption_modifier = (attackParams.ammo_consumption_modifier or 1) * 0.01
 end
 
 -- red ammo
@@ -120,6 +120,16 @@ do
 	end
 end
 
+-- tank
+do
+	local tankCannon = data.raw.gun["tank-cannon"]
+	tankCannon.attack_parameters.range = 100
+	local cannonShell = data.raw.ammo["cannon-shell"]
+	cannonShell.ammo_type.action.action_delivery.max_range = 100
+	local explosiveCannonShell = data.raw.ammo["explosive-cannon-shell"]
+	explosiveCannonShell.ammo_type.action.action_delivery.max_range = 100
+end
+
 -- biters
 updateUnit("small-biter", {
 	"set health", 15,
@@ -131,11 +141,11 @@ updateUnit("medium-biter", {
 })
 updateUnit("big-biter", {
 	"set health", 200,
-	"set resistance", "physical", 2, 10
+	"set resistance", "physical", 2, 20
 })
 updateUnit("behemoth-biter", {
 	"set health", 500,
-	"set resistance", "physical", 2, 10
+	"set resistance", "physical", 5, 30
 })
 updateUnit("behemoth-spitter", {
 	"set health", 1000,
@@ -165,11 +175,13 @@ do
 	local miningDrill = data.raw["mining-drill"]["burner-mining-drill"]
 	local energySource = miningDrill.energy_source
 	energySource.emissions_per_minute = energySource.emissions_per_minute * 0.5
+	miningDrill.base_productivity = (miningDrill.base_productivity or 1) * 1.5
 end
 do
 	local miningDrill2 = data.raw["mining-drill"]["burner-mining-drill-mk2"]
 	local energySource = miningDrill2.energy_source
 	energySource.emissions_per_minute = energySource.emissions_per_minute * 0.1
+	miningDrill2.base_productivity = (miningDrill2.base_productivity or 1) * 2
 end
 
 -- robots
