@@ -103,6 +103,8 @@ end
 
 
 
+
+
 -- misc
 
 function incrementOrder(order)
@@ -111,6 +113,28 @@ function incrementOrder(order)
 	local newCharNum = string.char(lastCharNum + 1)
 	return string.sub(order, 1, -2) .. newCharNum
 end
+
+function isDigitOrPeriod(char)
+    return string.match(char, "[0-9%.]") ~= nil
+end
+
+function multValueWithUnits(value, mult)
+	if type(value) ~= "string" then
+		warn("first input for `multValueWithUnits()` needs to be a string.")
+		return
+	end
+	local valueNumber = ""
+	for i=1,string.len(value) do
+		local char = string.sub(value, i, i)
+		if not isDigitOrPeriod(char) then break end
+		valueNumber = valueNumber .. char
+	end
+	valueNumber = tonumber(valueNumber)
+	valueUnits = string.sub(value, string.len(valueNumber) + 1, -1)
+	return tostring(valueNumber * mult) .. valueUnits
+end
+
+
 
 
 
@@ -284,6 +308,8 @@ end
 
 
 
+
+
 -- recipes
 
 function addItemToRecipeTable(recipe, itemName, count)
@@ -401,6 +427,8 @@ function updateRecipe(recipeName, updates)
 		i = i + 1 + argCount
 	end
 end
+
+
 
 
 

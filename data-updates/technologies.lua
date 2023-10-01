@@ -92,7 +92,6 @@ updateTechnology("production-science-pack", {
 })
 updateTechnology("logistics-2", {
 	"remove prereq", "logistic-science-pack",
-	"add prereq", "production-science-pack",
 	"add prereq", "advanced-oil-processing",
 	"add prereq", "stack-inserter"
 })
@@ -114,11 +113,29 @@ updateTechnology("military-3", {
 	"remove prereq", "military-science-pack",
 	"add prereq", "military-2"
 })
+updateTechnology("power-armor", {
+	"remove prereq", "advanced-electronics-2"
+})
+updateTechnology("power-armor-mk2", {
+	"remove prereq", "military-4",
+	"remove prereq", "speed-module-2",
+	"add prereq", "speed-module",
+	"remove prereq", "effectivity-module-2",
+	"add prereq", "effectivity-module",
+	"add prereq", "advanced-electronics-2",
+	"add prereq", "low-density-structure"
+})
 updateTechnology("concrete", {
 	"remove prereq", "automation-2",
 	"remove prereq", "advanced-material-processing",
 	"add prereq", "automobilism",
 	"add prereq", "stone-wall"
+})
+updateTechnology("low-density-structure", {
+	"set cost", 200,
+	"remove prereq", "advanced-material-processing",
+	"add prereq", "construction-robotics",
+	"add prereq", "plastics"
 })
 updateTechnology("solar-energy", {
 	"add prereq", "railway"
@@ -160,6 +177,7 @@ updateTechnology("battery-equipment"           , {"add science", "chemical-scien
 updateTechnology("battery-mk2-equipment"       , {"add science", "production-science-pack", 1})
 updateTechnology("modules"                     , {"add science", "chemical-science-pack", 1})
 updateTechnology("modular-armor"               , {"add science", "chemical-science-pack", 1})
+updateTechnology("power-armor-mk2"             , {"remove science", "utility-science-pack"})
 updateTechnology("solar-panel-equipment"       , {"add science", "chemical-science-pack", 1})
 updateTechnology("battery"                     , {"add science", "chemical-science-pack", 1})
 updateTechnology("electric-energy-accumulators", {"add science", "chemical-science-pack", 1})

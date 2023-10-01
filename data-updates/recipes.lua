@@ -120,7 +120,17 @@ updateRecipe("military-science-pack", {
 	"remove item", "piercing-rounds-magazine",
 	"add item", "firearm-magazine", 2
 })
-updateRecipe("wall", {
+updateRecipe("power-armor", {
+	"remove item", "processing-unit",
+	"add item", "advanced-circuit", 50
+})
+updateRecipe("power-armor-mk2", {
+	"remove item", "speed-module-2",
+	"add item", "speed-module", 25,
+	"remove item", "effectivity-module-2",
+	"add item", "effectivity-module", 25
+})
+updateRecipe("stone-wall", {
 	"set item", "stone-brick", 3
 })
 updateRecipe("piercing-rounds-magazine", {

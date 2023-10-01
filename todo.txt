@@ -1,4 +1,6 @@
 Current:
+increase wall health
+make inserter capacity increases easier
 //replace burner miner mk2 with steam powered version of electric miner?
 add multiple types of mk2 miners (default, productivity, no pollution, more?)
 add chemical science to military science prereqs
@@ -32,6 +34,7 @@ overhaul nuc. reactors? (probably should be its own mod)
 
 
 Finished:
+reduce consumption of high-tier inserters
 convert tech functions into single updateTechnology() function
 make building recipes easier to craft
 increase miner mk2 pollution

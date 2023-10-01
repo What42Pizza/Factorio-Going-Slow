@@ -9,15 +9,17 @@ require("data-updates.recipes")
 
 -- add steam power
 
-function addSteamPower(ptototype, steamPerSecond, emissionsPerMinute, pipe_connections)
-	ptototype.energy_source = {
+function addSteamPower(prototype, steamPerSecond, emissionsPerMinute, pipe_connections)
+	prototype.energy_source = {
 		type = "fluid",
 		fluid_usage_per_tick = steamPerSecond / 60.0,
+		scale_fluid_usage = true,
 		fluid_box = {
 			pipe_connections = pipe_connections
 		},
 		emissions_per_minute = emissionsPerMinute 
 	}
+	--prototype.energy_usage = multValueWithUnits(prototype.energy_usage, 0.5)
 end
 
 local pipeConnections_LR = { -- left, right
@@ -59,12 +61,18 @@ local pipeConnections_LRTB = { -- left, right, top, bottom
 	}
 }
 
-addSteamPower(data.raw["assembling-machine"]["assembling-machine-1"], 5, 10, pipeConnections_LR)
-addSteamPower(data.raw["assembling-machine"]["assembling-machine-2"], 5, 10, pipeConnections_LR)
-addSteamPower(data.raw["assembling-machine"]["chemical-plant"], 3, 10, pipeConnections_LR)
-addSteamPower(data.raw["assembling-machine"]["oil-refinery"], 10, 25, pipeConnections_LR_3)
-addSteamPower(data.raw["lab"]["lab"], 10, 5, pipeConnections_LRTB)
-addSteamPower(data.raw["mining-drill"]["pumpjack"], 15, 5, pipeConnections_LR)
+addSteamPower(data.raw["assembling-machine"]["assembling-machine-1"], 10, 10, pipeConnections_LR)
+addSteamPower(data.raw["assembling-machine"]["assembling-machine-2"], 10, 10, pipeConnections_LR)
+addSteamPower(data.raw["assembling-machine"]["chemical-plant"], 20, 10, pipeConnections_LR)
+addSteamPower(data.raw["assembling-machine"]["oil-refinery"], 20, 25, pipeConnections_LR_3)
+addSteamPower(data.raw["lab"]["lab"], 20, 5, pipeConnections_LRTB)
+addSteamPower(data.raw["mining-drill"]["pumpjack"], 25, 5, pipeConnections_LR)
+
+-- decrease chemical plant energy usage
+do
+	local chemicalPlant = data.raw["assembling-machine"]["chemical-plant"]
+	chemicalPlant.energy_usage = multValueWithUnits(chemicalPlant.energy_usage or "210kW", 125/210)
+end
 
 
 
@@ -153,7 +161,17 @@ updateUnit("behemoth-spitter", {
 
 
 
+
+
 -- misc
+
+
+-- character
+do
+	local character = data.raw.character.character
+	character.inventory_size = (character.inventory_size or 80) + 20
+end
+
 
 -- assembling machines
 do
@@ -164,25 +182,51 @@ do
 	assemblingMachine2.crafting_speed = 1.0
 end
 
+
+-- inserters
+do
+	local fastInserter = data.raw["inserter"]["fast-inserter"]
+	fastInserter.energy_per_movement = multValueWithUnits(fastInserter.energy_per_movement or "7kW", 0.5)
+	fastInserter.energy_per_rotation = multValueWithUnits(fastInserter.energy_per_rotation or "7kW", 0.5)
+end
+do
+	local filterInserter = data.raw["inserter"]["filter-inserter"]
+	filterInserter.energy_per_movement = multValueWithUnits(filterInserter.energy_per_movement or "7kW", 0.5)
+	filterInserter.energy_per_rotation = multValueWithUnits(filterInserter.energy_per_rotation or "7kW", 0.5)
+end
+do
+	local stackInserter = data.raw["inserter"]["stack-inserter"]
+	stackInserter.energy_per_movement = multValueWithUnits(stackInserter.energy_per_movement or "20kW", 0.25)
+	stackInserter.energy_per_rotation = multValueWithUnits(stackInserter.energy_per_rotation or "20kW", 0.25)
+end
+do
+	local stackFilterInserter = data.raw["inserter"]["stack-filter-inserter"]
+	stackFilterInserter.energy_per_movement = multValueWithUnits(stackFilterInserter.energy_per_movement or "20kW", 0.25)
+	stackFilterInserter.energy_per_rotation = multValueWithUnits(stackFilterInserter.energy_per_rotation or "20kW", 0.25)
+end
+
+
 -- steam engine
 do
 	local steamEngine = data.raw.generator["steam-engine"]
 	steamEngine.energy_source.emissions_per_minute = 15
 end
 
+
 -- mining drills
 do
 	local miningDrill = data.raw["mining-drill"]["burner-mining-drill"]
 	local energySource = miningDrill.energy_source
 	energySource.emissions_per_minute = energySource.emissions_per_minute * 0.5
-	miningDrill.base_productivity = (miningDrill.base_productivity or 1) * 1.5
+	miningDrill.base_productivity = (miningDrill.base_productivity or 1) * 2
 end
 do
 	local miningDrill2 = data.raw["mining-drill"]["burner-mining-drill-mk2"]
 	local energySource = miningDrill2.energy_source
 	energySource.emissions_per_minute = energySource.emissions_per_minute * 0.1
-	miningDrill2.base_productivity = (miningDrill2.base_productivity or 1) * 2
+	miningDrill2.base_productivity = (miningDrill2.base_productivity or 1) * 4
 end
+
 
 -- robots
 do
