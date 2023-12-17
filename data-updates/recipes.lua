@@ -6,6 +6,14 @@ updateRecipe("chemical-science-pack", {
 	"craft time", 10,
 	"set count", 1
 })
+updateRecipe("production-science-pack", {
+	"set count", 2,
+	"craft time", 30,
+	"remove item", "electric-furnace",
+	"set item", "rail", 20,
+	"add item", "stone-furnace", 10,
+	"add item", "assembling-machine-1", 2
+})
 updateRecipe("transport-belt", {
 	"remove item", "iron-plate",
 	"add item", "copper-plate", 1
@@ -130,6 +138,18 @@ updateRecipe("power-armor-mk2", {
 	"remove item", "effectivity-module-2",
 	"add item", "effectivity-module", 25
 })
+--updateRecipe("speed-module", {
+--	"craft time", 10,
+--	"set item", "advanced-circuit", 5
+--})
+--updateRecipe("productivity-module", {
+--	"craft time", 10,
+--	"set item", "advanced-circuit", 5
+--})
+--updateRecipe("effectivity-module", {
+--	"craft time", 10,
+--	"set item", "advanced-circuit", 5
+--})
 updateRecipe("stone-wall", {
 	"set item", "stone-brick", 3
 })
