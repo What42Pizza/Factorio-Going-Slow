@@ -1,13 +1,11 @@
 physical-projectile-damage-1
 physical-projectile-damage-2
-weapon-shooting-speed-1
-weapon-shooting-speed-2
-stronger-explosives-1
 physical-projectile-damage-3
 physical-projectile-damage-4
 physical-projectile-damage-5
 physical-projectile-damage-6
 physical-projectile-damage-7
+stronger-explosives-1
 stronger-explosives-2
 stronger-explosives-3
 stronger-explosives-4
@@ -28,6 +26,8 @@ energy-weapons-damage-4
 energy-weapons-damage-5
 energy-weapons-damage-6
 energy-weapons-damage-7
+weapon-shooting-speed-1
+weapon-shooting-speed-2
 weapon-shooting-speed-3
 weapon-shooting-speed-4
 weapon-shooting-speed-5

@@ -77,7 +77,7 @@ updateRecipe("gun-turret", {
 	"set item", "iron-gear-wheel", 5,
 })
 updateRecipe("radar", {"set item", "electronic-circuit", 3})
-updateRecipe("landfill", {"add item", "stone", 100})
+updateRecipe("landfill", {"add item", "stone", 250})
 
 updateRecipe("assembling-machine-1", {
 	"remove item", "electronic-circuit",
@@ -95,6 +95,13 @@ updateRecipe("splitter", {
 	"set item", "electronic-circuit", 1
 })
 
+updateRecipe("iron-chest", {
+	"set item", "iron-plate", 4
+})
+updateRecipe("steel-chest", {
+	"set item", "steel-plate", 4
+})
+
 updateRecipe("rail", {"set count", 4})
 updateRecipe("locomotive", {
 	"set item", "steel-plate", 10,
@@ -105,8 +112,8 @@ updateRecipe("train-stop", {
 	"remove item", "iron-stick",
 	"set item", "electronic-circuit", 1
 })
-updateRecipe("rail-signal", {"set item", "iron-plate", 3})
-updateRecipe("rail-chain-signal", {"set item", "iron-plate", 3})
+updateRecipe("rail-signal", {"set item", "iron-plate", 1})
+updateRecipe("rail-chain-signal", {"set item", "iron-plate", 1})
 updateRecipe("cargo-wagon", {
 	"set item", "iron-plate", 10,
 	"set item", "steel-plate", 10,
@@ -138,18 +145,6 @@ updateRecipe("power-armor-mk2", {
 	"remove item", "effectivity-module-2",
 	"add item", "effectivity-module", 25
 })
---updateRecipe("speed-module", {
---	"craft time", 10,
---	"set item", "advanced-circuit", 5
---})
---updateRecipe("productivity-module", {
---	"craft time", 10,
---	"set item", "advanced-circuit", 5
---})
---updateRecipe("effectivity-module", {
---	"craft time", 10,
---	"set item", "advanced-circuit", 5
---})
 updateRecipe("stone-wall", {
 	"set item", "stone-brick", 3
 })

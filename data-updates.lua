@@ -255,10 +255,13 @@ do
 	roboport.charging_energy = multValueWithUnits(roboport.charging_energy or "1000kW", 0.05)
 	local energy_source = roboport.energy_source
 	energy_source.buffer_capacity = multValueWithUnits(energy_source.buffer_capacity or "100MJ", 0.01)
-	energy_source.input_flow_limit = multValueWithUnits(energy_source.input_flow_limit or "5MW", 0.01)
+	energy_source.input_flow_limit = multValueWithUnits(energy_source.input_flow_limit or "5MW", 0.1)
 end
+
 
 do
 	local radar = data.raw.radar.radar
 	radar.energy_usage = multValueWithUnits(radar.energy_usage or "300kW", 0.1)
+	radar.energy_per_nearby_scan = multValueWithUnits(radar.energy_per_nearby_scan or "250kJ", 0.1)
+	radar.energy_per_sector = multValueWithUnits(radar.energy_per_sector or "10MJ", 0.1)
 end
