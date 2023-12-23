@@ -3,6 +3,7 @@ require("utils")
 
 
 require("data/burner-mining-drill-mk2")
+require("data/medium-wood-electric-pole")
 
 
 

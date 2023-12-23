@@ -1,18 +1,17 @@
 Current:
+add graphics for burner miner mk2
 add sulfuric acid to solar panel recipe? (solar panels don't fit vibe, but I don't want to fully remove the only ups-friendly energy)
 increase wall health
 make inserter capacity increases easier
 //replace burner miner mk2 with steam powered version of electric miner?
 add multiple types of mk2 miners (default, productivity, no pollution, more?)
 add chemical science to military science prereqs
-add bigger wooden power poles
 add pollution to trains? (probably a bad idea, biters might attack it)
 increase player craft speed to 1.5? (might not be possible)
 add circuits to electronics research? (would require A LOT of work)
 add steam power to everything possible
 add language files
 overhaul science packs?
-remove some 'increase' researches?
 add logging settings
 add later science for landfill or cliff explosives?
 look into also removing items, not just researches?
@@ -35,6 +34,8 @@ overhaul nuc. reactors? (probably should be its own mod)
 
 
 Finished:
+add bigger wooden power poles
+remove some 'increase' researches
 reduce consumption of high-tier inserters
 convert tech functions into single updateTechnology() function
 make building recipes easier to craft

@@ -128,6 +128,7 @@ updateTechnology("logistics-2", {
 	"add prereq", "stack-inserter"
 })
 updateTechnology("automation-2", {
+	"set cost", 250,
 	"remove prereq", "electronics",
 	"remove prereq", "logistic-science-pack",
 	"remove prereq", "steel-processing",
@@ -135,6 +136,7 @@ updateTechnology("automation-2", {
 	"add prereq", "automation"
 })
 updateTechnology("advanced-material-processing", {
+	"set cost", 250,
 	"remove prereq", "logistic-science-pack",
 	"add prereq", "logistics-2"
 })

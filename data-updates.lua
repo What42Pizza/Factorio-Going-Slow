@@ -98,6 +98,7 @@ do
 	local attackParams = gunTurret.attack_parameters
 	attackParams.damage_modifier = (attackParams.damage_modifier or 1) * 0.2
 	attackParams.ammo_consumption_modifier = (attackParams.ammo_consumption_modifier or 1) * 0.01
+	attackParams.range = (attackParams.range or 18) * 1.3
 end
 
 -- red ammo
@@ -259,9 +260,24 @@ do
 end
 
 
+-- radar
 do
 	local radar = data.raw.radar.radar
 	radar.energy_usage = multValueWithUnits(radar.energy_usage or "300kW", 0.1)
 	radar.energy_per_nearby_scan = multValueWithUnits(radar.energy_per_nearby_scan or "250kJ", 0.1)
 	radar.energy_per_sector = multValueWithUnits(radar.energy_per_sector or "10MJ", 0.1)
+end
+
+
+-- beacons
+do
+	local beacon = data.raw.beacon.beacon
+	beacon.energy_usage = multValueWithUnits(beacon.energy_usage or "480kW", 0.25)
+end
+
+
+-- centrifuge
+do
+	local centrifuge = data.raw["assembling-machine"].centrifuge
+	centrifuge.energy_usage = multValueWithUnits(centrifuge.energy_usage or "350kW", 0.2)
 end

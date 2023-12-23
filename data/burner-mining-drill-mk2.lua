@@ -4,6 +4,31 @@ entity.mining_speed = entity.mining_speed * 1.5
 entity.resource_searching_radius = 1.99
 entity.order = incrementOrder(entity.order)
 entity.name = "burner-mining-drill-mk2"
+entity.input_fluid_box = {
+  base_area = 1,
+  base_level = -1,
+  height = 2,
+  pipe_connections = {
+	{
+	  position = {
+		-1.5,
+		0.5
+	  }
+	},
+	{
+	  position = {
+		1.5,
+		0.5
+	  }
+	},
+	{
+	  position = {
+		0.5,
+		1.5
+	  }
+	}
+  },
+}
 
 
 

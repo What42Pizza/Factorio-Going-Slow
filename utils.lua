@@ -134,6 +134,36 @@ function multValueWithUnits(value, mult)
 	return tostring(valueNumber * mult) .. valueUnits
 end
 
+function replaceGraphicsFileName(inputFilename, findString, replaceString)
+	local filename = string.sub(inputFilename, 9)
+	if string.sub(filename, 1, 9) ~= "/graphics" then return inputFilename end
+	filename = "__going-slow__" .. filename
+	local start = 1
+	while true do
+		local findStart, findEnd = string.find(filename, findString, start, true)
+		if not findStart then break end
+		local firstHalf = string.sub(filename, 1, findStart - 1) .. replaceString
+		start = string.len(firstHalf)
+		filename = firstHalf .. string.sub(filename, findEnd + 1)
+	end
+	return filename
+end
+
+function replaceAllGraphicsFileNames(startTable, findString, replaceString)
+	local allTables = {startTable}
+	while #allTables > 0 do
+		local inputTable = table.remove(allTables)
+		for k,v in pairs(inputTable) do
+			if k == "filename" then
+				inputTable.filename = replaceGraphicsFileName(v, findString, replaceString)
+			end
+			if type(v) == "table" then
+				table.insert(allTables, v)
+			end
+		end
+	end
+end
+
 
 
 
