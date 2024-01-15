@@ -9,10 +9,10 @@ require("data-updates.recipes")
 
 -- add steam power
 
-function addSteamPower(prototype, steamPerSecond, emissionsPerMinute, pipe_connections)
+function addSteamPower(prototype, emissionsPerMinute, pipe_connections)
 	prototype.energy_source = {
 		type = "fluid",
-		fluid_usage_per_tick = steamPerSecond / 60.0,
+		--fluid_usage_per_tick = 100,--steamPerSecond / 60.0,
 		scale_fluid_usage = true,
 		fluid_box = {
 			pipe_connections = pipe_connections
@@ -60,18 +60,55 @@ local pipeConnections_LRTB = { -- left, right, top, bottom
 		type = "input-output"
 	}
 }
+local pipeConnections_LRTB_5 = { -- left, right, top, bottom
+	{
+		position = {5, 0},
+		type = "input-output"
+	},
+	{
+		position = {-5, 0},
+		type = "input-output"
+	},
+	{
+		position = {0, 5},
+		type = "input-output"
+	},
+	{
+		position = {0, -5},
+		type = "input-output"
+	}
+}
 
-addSteamPower(data.raw["assembling-machine"]["assembling-machine-1"], 10, 10, pipeConnections_LR)
-addSteamPower(data.raw["assembling-machine"]["assembling-machine-2"], 10, 10, pipeConnections_LR)
-addSteamPower(data.raw["assembling-machine"]["chemical-plant"], 20, 10, pipeConnections_LR)
-addSteamPower(data.raw["assembling-machine"]["oil-refinery"], 20, 25, pipeConnections_LR_3)
-addSteamPower(data.raw.lab.lab, 20, 5, pipeConnections_LRTB)
-addSteamPower(data.raw["mining-drill"].pumpjack, 25, 5, pipeConnections_LR)
+addSteamPower(data.raw["assembling-machine"]["assembling-machine-1"], 10, pipeConnections_LR)
+addSteamPower(data.raw["assembling-machine"]["assembling-machine-2"], 15, pipeConnections_LR)
+addSteamPower(data.raw["assembling-machine"]["chemical-plant"], 30, pipeConnections_LR)
+addSteamPower(data.raw["assembling-machine"]["oil-refinery"], 50, pipeConnections_LR_3)
+addSteamPower(data.raw.lab.lab, 5, pipeConnections_LRTB)
+addSteamPower(data.raw["mining-drill"].pumpjack, 5, pipeConnections_LR)
+addSteamPower(data.raw["rocket-silo"]["rocket-silo"], 5, pipeConnections_LRTB_5)
 
 -- decrease chemical plant energy usage
 do
 	local chemicalPlant = data.raw["assembling-machine"]["chemical-plant"]
 	chemicalPlant.energy_usage = multValueWithUnits(chemicalPlant.energy_usage or "210kW", 125/210)
+end
+
+-- decrease oil refinery energy usage
+do
+	local oilRefinery = data.raw["assembling-machine"]["oil-refinery"]
+	oilRefinery.energy_usage = multValueWithUnits(oilRefinery.energy_usage or "1.68MW", 0.5)
+end
+
+-- increase steel furnace emissions
+do
+	local steelFurnace = data.raw.furnace["steel-furnace"]
+	steelFurnace.energy_source.emissions_per_minute = steelFurnace.energy_source.emissions_per_minute * 1.5
+end
+
+-- increase rocket silo energy usage
+do
+	local rocketSilo = data.raw["rocket-silo"]["rocket-silo"]
+	rocketSilo.energy_usage = multValueWithUnits(rocketSilo.energy_usage or "250kW", 20)
 end
 
 
@@ -124,9 +161,15 @@ do
 	local targetEffects = actionDelivery.target_effects
 	for _,effect in ipairs(targetEffects) do
 		if effect.damage then
-			effect.damage.amount = effect.damage.amount * 2
+			effect.damage.amount = effect.damage.amount * 1.25
 		end
 	end
+end
+
+-- atomic bomb
+do
+	local atomicBomb = data.raw.ammo["atomic-bomb"]
+	atomicBomb.ammo_type.range_modifier = 2.5
 end
 
 -- tank
@@ -153,11 +196,11 @@ updateUnit("big-biter", {
 	"set resistance", "physical", 2, 20
 })
 updateUnit("behemoth-biter", {
-	"set health", 500,
+	"set health", 625,
 	"set resistance", "physical", 5, 30
 })
 updateUnit("behemoth-spitter", {
-	"set health", 1000,
+	"set health", 1250,
 })
 
 
@@ -171,6 +214,14 @@ updateUnit("behemoth-spitter", {
 do
 	local character = data.raw.character.character
 	character.inventory_size = (character.inventory_size or 80) + 20
+end
+
+-- robots
+do
+	local constructionRobot = data.raw["construction-robot"]["construction-robot"]
+	local logisticRobot = data.raw["logistic-robot"]["logistic-robot"]
+	constructionRobot.max_health = constructionRobot.max_health * 5
+	logisticRobot.max_health = logisticRobot.max_health * 5
 end
 
 
@@ -189,6 +240,20 @@ do
 	for _,lab in pairs(data.raw.lab) do
 		lab.researching_speed = (lab.researching_speed or 1) * 3
 	end
+end
+
+
+-- modules
+do
+	function setConsumption(prototype, bonus)
+		prototype.effect.consumption.bonus = bonus
+	end
+	setConsumption(data.raw.module["speed-module"], 0.1)
+	setConsumption(data.raw.module["productivity-module"], 0.1)
+	setConsumption(data.raw.module["effectivity-module"], 0.1)
+	setConsumption(data.raw.module["speed-module-2"], 0.25)
+	setConsumption(data.raw.module["productivity-module-2"], 0.25)
+	setConsumption(data.raw.module["effectivity-module-2"], 0.25)
 end
 
 
@@ -242,21 +307,21 @@ do
 	local constructionRobot = data.raw["construction-robot"]["construction-robot"]
 	local logisticRobot = data.raw["logistic-robot"]["logistic-robot"]
 	constructionRobot.speed = constructionRobot.speed * 1.5
-	constructionRobot.max_energy = multValueWithUnits(constructionRobot.max_energy or "1.5MJ", 0.05)
-	constructionRobot.energy_per_move = multValueWithUnits(constructionRobot.energy_per_move or "5kJ", 0.05)
-	constructionRobot.energy_per_tick = multValueWithUnits(constructionRobot.energy_per_tick or "0.05kJ", 0.05)
+	constructionRobot.max_energy = multValueWithUnits(constructionRobot.max_energy or "1.5MJ", 0.1)
+	constructionRobot.energy_per_move = multValueWithUnits(constructionRobot.energy_per_move or "5kJ", 0.1)
+	constructionRobot.energy_per_tick = multValueWithUnits(constructionRobot.energy_per_tick or "0.05kJ", 0.1)
 	logisticRobot.speed = logisticRobot.speed * 1.5
-	logisticRobot.max_energy = multValueWithUnits(logisticRobot.max_energy or "1.5MJ", 0.05)
-	logisticRobot.energy_per_move = multValueWithUnits(logisticRobot.energy_per_move or "5kJ", 0.05)
-	logisticRobot.energy_per_tick = multValueWithUnits(logisticRobot.energy_per_tick or "0.05kJ", 0.05)
+	logisticRobot.max_energy = multValueWithUnits(logisticRobot.max_energy or "1.5MJ", 0.1)
+	logisticRobot.energy_per_move = multValueWithUnits(logisticRobot.energy_per_move or "5kJ", 0.1)
+	logisticRobot.energy_per_tick = multValueWithUnits(logisticRobot.energy_per_tick or "0.05kJ", 0.1)
 end
 do
 	local roboport = data.raw.roboport.roboport
-	roboport.energy_usage = multValueWithUnits(roboport.energy_usage or "50kW", 0.1)
-	roboport.charging_energy = multValueWithUnits(roboport.charging_energy or "1000kW", 0.05)
+	roboport.energy_usage = multValueWithUnits(roboport.energy_usage or "50kW", 0.2)
+	roboport.charging_energy = multValueWithUnits(roboport.charging_energy or "1000kW", 0.1)
 	local energy_source = roboport.energy_source
-	energy_source.buffer_capacity = multValueWithUnits(energy_source.buffer_capacity or "100MJ", 0.01)
-	energy_source.input_flow_limit = multValueWithUnits(energy_source.input_flow_limit or "5MW", 0.1)
+	energy_source.buffer_capacity = multValueWithUnits(energy_source.buffer_capacity or "100MJ", 0.02)
+	energy_source.input_flow_limit = multValueWithUnits(energy_source.input_flow_limit or "5MW", 0.2)
 end
 
 

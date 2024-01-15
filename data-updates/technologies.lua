@@ -26,6 +26,7 @@ updateTechnology("logistics-3"                     , {"disable"})
 updateTechnology("electric-energy-distribution-1"  , {"disable"})
 updateTechnology("electric-energy-distribution-2"  , {"disable"})
 updateTechnology("advanced-material-processing-2"  , {"disable"})
+updateTechnology("military-4"                      , {"disable"})
 updateTechnology("braking-force-3"                 , {"disable"})
 updateTechnology("braking-force-4"                 , {"disable"})
 updateTechnology("braking-force-5"                 , {"disable"})
@@ -91,6 +92,14 @@ updateTechnology("fluid-wagon"                  , {"set cost",  50})
 updateTechnology("military-2"                   , {"set cost",  50})
 updateTechnology("fast-inserter"                , {"set cost", 100})
 
+updateTechnology("cliff-explosives", {
+	"set cost", 1000,
+	"add science", "military-science-pack", 1,
+	"add science", "chemical-science-pack", 1,
+	"add science", "production-science-pack", 1,
+	"add science", "utility-science-pack", 1,
+	"add science", "space-science-pack", 1,
+})
 updateTechnology("electronics", {
 	"remove prereq", "automation",
 	"add prereq", "electric-power"
@@ -159,6 +168,11 @@ updateTechnology("power-armor-mk2", {
 	"add prereq", "advanced-electronics-2",
 	"add prereq", "low-density-structure"
 })
+updateTechnology("atomic-bomb", {
+	"remove prereq", "speed-module",
+	"remove prereq", "explosives",
+	"add prereq", "uranium-ammo"
+})
 updateTechnology("concrete", {
 	"remove prereq", "automation-2",
 	"remove prereq", "advanced-material-processing",
@@ -217,3 +231,4 @@ updateTechnology("power-armor"                 , {"add science", "production-sci
 updateTechnology("solar-panel-equipment"       , {"add science", "chemical-science-pack", 1})
 updateTechnology("battery"                     , {"add science", "chemical-science-pack", 1})
 updateTechnology("electric-energy-accumulators", {"add science", "chemical-science-pack", 1})
+updateTechnology("artillery"                   , {"remove science", "space-science-pack"})

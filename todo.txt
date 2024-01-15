@@ -1,7 +1,9 @@
 Current:
+add pressurized steam
+add defender research to prereqs for other researches?
 add graphics for burner miner mk2
 add sulfuric acid to solar panel recipe? (solar panels don't fit vibe, but I don't want to fully remove the only ups-friendly energy)
-increase wall health
+increase wall health?
 make inserter capacity increases easier
 //replace burner miner mk2 with steam powered version of electric miner?
 add multiple types of mk2 miners (default, productivity, no pollution, more?)

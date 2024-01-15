@@ -50,6 +50,10 @@ updateRecipe("advanced-circuit", {
 updateRecipe("car", {
 	"set item", "engine-unit", 1
 })
+updateRecipe("spidertron", {
+	"remove item", "effectivity-module-3",
+	"add item", "effectivity-module-2", 5
+})
 updateRecipe("engine-unit", {
 	"craft time", 3
 })
@@ -75,6 +79,9 @@ updateRecipe("gun-turret", {
 	"set item", "iron-plate", 10,
 	"set item", "copper-plate", 5,
 	"set item", "iron-gear-wheel", 5,
+})
+updateRecipe("atomic-bomb", {
+	"set item", "uranium-235", 100
 })
 updateRecipe("radar", {"set item", "electronic-circuit", 3})
 updateRecipe("landfill", {"add item", "stone", 250})
