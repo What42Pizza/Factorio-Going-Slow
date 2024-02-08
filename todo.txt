@@ -1,6 +1,12 @@
 Current:
-add pressurized steam
-add defender research to prereqs for other researches?
+remove night vision?
+find more infinite researches to do (only kinda possible)
+replace iron stick in rail recipe with wood?
+remove 4x research cost when MSP is detected?
+replace 2x crafted speed for red circuits with 2x results (maybe 3x?)
+add pressurized steam (maybe not, hotter steam also exists)
+add spidertron tiers
+add defender research to prereqs for other researches? (or even defenders to military related recipes?)
 add graphics for burner miner mk2
 add sulfuric acid to solar panel recipe? (solar panels don't fit vibe, but I don't want to fully remove the only ups-friendly energy)
 increase wall health?

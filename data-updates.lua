@@ -134,8 +134,14 @@ do
 	local gunTurret = data.raw["ammo-turret"]["gun-turret"]
 	local attackParams = gunTurret.attack_parameters
 	attackParams.damage_modifier = (attackParams.damage_modifier or 1) * 0.2
-	attackParams.ammo_consumption_modifier = (attackParams.ammo_consumption_modifier or 1) * 0.01
+	attackParams.ammo_consumption_modifier = (attackParams.ammo_consumption_modifier or 1) * 0.25
 	attackParams.range = (attackParams.range or 18) * 1.3
+end
+
+-- yellow ammo
+do
+	local firearmRounds = data.raw.ammo["firearm-magazine"]
+	firearmRounds.magazine_size = 50
 end
 
 -- red ammo
@@ -150,6 +156,7 @@ do
 			effect.damage.amount = effect.damage.amount * 2
 		end
 	end
+	piercingRounds.magazine_size = 50
 end
 
 -- uranium ammo
@@ -164,6 +171,7 @@ do
 			effect.damage.amount = effect.damage.amount * 1.25
 		end
 	end
+	uraniumRounds.magazine_size = 25
 end
 
 -- atomic bomb

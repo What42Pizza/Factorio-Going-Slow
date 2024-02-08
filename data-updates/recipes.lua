@@ -159,6 +159,10 @@ updateRecipe("piercing-rounds-magazine", {
 	"add item", "firearm-magazine", 2,
 	"add item", "steel-plate", 2,
 })
+updateRecipe("uranium-rounds-magazine", {
+	"craft time", 5,
+	"set item", "piercing-rounds-magazine", 2,
+})
 
 updateRecipe("speed-module"         , {"add item", "electronic-circuit" , 10})
 updateRecipe("speed-module"         , {"add item", "advanced-circuit"   , 10})

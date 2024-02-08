@@ -59,6 +59,11 @@ updateTechnology("stronger-explosives-4"           , {"disable"})
 updateTechnology("stronger-explosives-5"           , {"disable"})
 updateTechnology("stronger-explosives-6"           , {"disable"})
 updateTechnology("stronger-explosives-7"           , {"disable"})
+updateTechnology("explosive-rocketry"              , {"disable"})
+updateTechnology("energy-shield-mk2-equipment"     , {"disable"})
+updateTechnology("battery-mk2-equipment"           , {"disable"})
+updateTechnology("personal-roboport-mk2-equipment" , {"disable"})
+updateTechnology("artillery-shell-speed-1"         , {"disable"})
 
 updateTechnology("concrete", {
 	"remove recipe", "refined-concrete",
@@ -232,3 +237,8 @@ updateTechnology("solar-panel-equipment"       , {"add science", "chemical-scien
 updateTechnology("battery"                     , {"add science", "chemical-science-pack", 1})
 updateTechnology("electric-energy-accumulators", {"add science", "chemical-science-pack", 1})
 updateTechnology("artillery"                   , {"remove science", "space-science-pack"})
+
+do
+	local artilleryShellRange = data.raw.technology["artillery-shell-range-1"]
+	artilleryShellRange.unit.count_formula = "1.5^L*1000"
+end
