@@ -1,11 +1,10 @@
 Current:
-remove night vision?
 find more infinite researches to do (only kinda possible)
 replace iron stick in rail recipe with wood?
 remove 4x research cost when MSP is detected?
 replace 2x crafted speed for red circuits with 2x results (maybe 3x?)
 add pressurized steam (maybe not, hotter steam also exists)
-add spidertron tiers
+add a boiler for higher temperature steam?
 add defender research to prereqs for other researches? (or even defenders to military related recipes?)
 add graphics for burner miner mk2
 add sulfuric acid to solar panel recipe? (solar panels don't fit vibe, but I don't want to fully remove the only ups-friendly energy)
@@ -17,11 +16,10 @@ add chemical science to military science prereqs
 add pollution to trains? (probably a bad idea, biters might attack it)
 increase player craft speed to 1.5? (might not be possible)
 add circuits to electronics research? (would require A LOT of work)
-add steam power to everything possible
+add steam power to everything possible (well, kinda)
 add language files
 overhaul science packs?
 add logging settings
-add later science for landfill or cliff explosives?
 look into also removing items, not just researches?
 rename automation science to basic science?
 overhaul nuc. reactors? (probably should be its own mod)
@@ -42,6 +40,9 @@ overhaul nuc. reactors? (probably should be its own mod)
 
 
 Finished:
+remove night vision? (I actually did this way earlier)
+add spidertron tiers
+add later science for landfill or cliff explosives?
 add bigger wooden power poles
 remove some 'increase' researches
 reduce consumption of high-tier inserters

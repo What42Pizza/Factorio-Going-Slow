@@ -164,6 +164,17 @@ function replaceAllGraphicsFileNames(startTable, findString, replaceString)
 	end
 end
 
+function setNameNumber(name, new_num)
+	local orig_name = name
+	while true do
+		if string.len(name) == 0 then warn("invalid name: " .. orig_name) error() end
+		local last_byte = string.byte(name, -1)
+		if last_byte < 48 or last_byte > 57 then break end
+		name = string.sub(name, 1, -2)
+	end
+	return name .. new_num
+end
+
 
 
 

@@ -50,10 +50,6 @@ updateRecipe("advanced-circuit", {
 updateRecipe("car", {
 	"set item", "engine-unit", 1
 })
-updateRecipe("spidertron", {
-	"remove item", "effectivity-module-3",
-	"add item", "effectivity-module-2", 5
-})
 updateRecipe("engine-unit", {
 	"craft time", 3
 })
