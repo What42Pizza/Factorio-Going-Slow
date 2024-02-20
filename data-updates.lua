@@ -111,6 +111,12 @@ do
 	rocketSilo.energy_usage = multValueWithUnits(rocketSilo.energy_usage or "250kW", 20)
 end
 
+-- decrease solar panel output
+do
+	local solarPanel = data.raw["solar-panel"]["solar-panel"]
+	solarPanel.production = multValueWithUnits(solarPanel.production or "60kW", 0.2)
+end
+
 
 
 -- enemy changes

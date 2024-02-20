@@ -5,7 +5,8 @@ require("utils")
 require("data/burner-mining-drill-mk2")
 require("data/medium-wood-electric-pole")
 require("data/spidertrons")
-require("data/technologies")
+require("data/physical_projective_damage")
+require("data/science_upgrades")
 
 
 

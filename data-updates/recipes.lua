@@ -44,7 +44,7 @@ updateRecipe("personal-roboport-mk2-equipment", {
 	"set item", "personal-roboport-equipment", 3
 })
 updateRecipe("advanced-circuit", {
-	"craft time", 3
+	"set count", 2
 })
 
 updateRecipe("car", {

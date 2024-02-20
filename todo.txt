@@ -1,4 +1,6 @@
 Current:
+decrease mining productivity bonus to 5% each?
+make rocketry science depend on spidertron?
 find more infinite researches to do (only kinda possible)
 replace iron stick in rail recipe with wood?
 remove 4x research cost when MSP is detected?
